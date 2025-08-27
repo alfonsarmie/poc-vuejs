@@ -56,12 +56,9 @@ onMounted(() => {
 })
 
 const getComponentByName = (name) => {
-  const components = {
-    'WidgetCrypto': WidgetCrypto,
-    'WidgetWeather': WidgetWeather,
-    'WidgetNotes': WidgetNotes
-  }
-  return components[name] || WidgetCrypto
+  if (!name) return WidgetCrypto; // si es null o undefined
+  const key = name.toString().toLowerCase(); // pasar a minúscula para evitar errores
+  return componentMap[key] || WidgetCrypto; // fallback seguro
 }
 
 const { startDrag, onDragOver, onDragLeave, onDrop, onDragEnd } = useDragAndDrop(widgets)
