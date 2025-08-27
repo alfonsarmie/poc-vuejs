@@ -28,9 +28,10 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 
-const price = ref(45598.53)
+const price = ref(45598.53) // Variable reactiva
 const lastUpdate = ref('00:00:00')
 
+// Se actualiza automáticamente cuando price cambia
 const formattedPrice = computed(() => {
   return new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
