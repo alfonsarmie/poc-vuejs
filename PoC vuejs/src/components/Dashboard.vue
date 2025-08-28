@@ -32,12 +32,14 @@ import { useDragAndDrop } from '../composables/useDragAndDrop'
 import WidgetCrypto from './WidgetCrypto.vue'
 import WidgetWeather from './WidgetWeather.vue'
 import WidgetNotes from './WidgetNotes.vue'
+import WidgetClock from './WidgetClock.vue'
 
 // Layout inicial con persistencia
 const defaultWidgets = [
   { component: WidgetCrypto },
   { component: WidgetWeather },
-  { component: WidgetNotes }
+  { component: WidgetNotes },
+  { component: WidgetClock }
 ]
 
 const widgets = ref([...defaultWidgets])
