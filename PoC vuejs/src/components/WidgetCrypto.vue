@@ -18,8 +18,10 @@
 
     <div class="price-change">
       <div class="change-item">
-        <span class="label">24h Change</span>
-        <span class="value positive">+2.3%</span>
+        <span class="label">Change since the page loaded:</span>
+        <span v-if="priceChange > 0" class="value positive">{{ priceChange }}%</span>
+        <span v-else-if="priceChange < 0" class="value negative">{{ priceChange }}%</span>
+        <span v-else="priceChange = 0" class="value neutral">No change yet!</span>
       </div>
     </div>
   </div>
@@ -28,7 +30,12 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 
+const initialPrice = ref(null) // Variable reactiva
 const price = ref(null) // Variable reactiva
+
+let count = 0; // Contador para la primera carga
+
+
 const lastUpdate = ref('00:00:00')
 
 // Se actualiza automáticamente cuando price cambia
@@ -47,7 +54,15 @@ const fetchBitcoinPrice = async () => {
     const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
     const data = await response.json();
     if (data && data.bitcoin && data.bitcoin.usd) {
-      price.value = data.bitcoin.usd;
+      
+      if (count == 0) {
+        initialPrice.value = data.bitcoin.usd;
+        price.value = initialPrice.value;
+        count++;
+      }else{
+        price.value = data.bitcoin.usd;
+      }
+
       lastUpdate.value = new Date().toLocaleTimeString('es-ES', {
         hour: '2-digit',
         minute: '2-digit',
@@ -58,6 +73,18 @@ const fetchBitcoinPrice = async () => {
     console.error('Error al obtener el precio del Bitcoin:', error);
   }
 };
+
+
+// Calcular variacion desde el precio inicial
+const priceChange = computed(() => { 
+
+  if (initialPrice.value === null || price.value === null || price.value == initialPrice.value) return 0;
+  
+  const change = ((price.value - initialPrice.value) / initialPrice.value) * 100;
+  return change.toFixed(6); // Retorna con dos decimales
+
+})
+
 
 
 
@@ -72,31 +99,6 @@ onMounted(() => {
     fetchBitcoinPrice();
   }, 20000); // Cada 10 segundos
   
-
-  /*
-  const interval = setInterval(() => {
-
-
-
-
-    // Variación aleatoria ± $100
-    const change = (Math.random() * 200) - 100
-
-    price.value = Math.max(40000, price.value + change)
-
-    lastUpdate.value = new Date().toLocaleTimeString('es-ES', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    })
-  }, 10000)*
-
-  // Actualizar inmediatamente, establece una fecha y hora de inicio de montaje del componente
-  lastUpdate.value = new Date().toLocaleTimeString('es-ES', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
-  })*/
 
 
   // Limpiar intervalo al desmontar el componente, evita fugas de memoria (ejecucion segundo plano)
@@ -221,6 +223,11 @@ onMounted(() => {
 .negative {
   color: #e53e3e;
 }
+
+.neutral {
+  color: #718096;
+}
+
 
 @keyframes pulse {
   0%, 100% { opacity: 1; }
