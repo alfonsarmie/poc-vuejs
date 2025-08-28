@@ -23,8 +23,11 @@
   </div>
 </template>
 
+
+
 <script setup>
 import { ref, onMounted } from 'vue'
+
 import { useDragAndDrop } from '../composables/useDragAndDrop'
 import WidgetCrypto from './WidgetCrypto.vue'
 import WidgetWeather from './WidgetWeather.vue'
@@ -62,7 +65,27 @@ const getComponentByName = (name) => {
 }
 
 const { startDrag, onDragOver, onDragLeave, onDrop, onDragEnd } = useDragAndDrop(widgets)
+
+
+
+
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <style scoped>
 .dashboard-container {
@@ -141,4 +164,5 @@ const { startDrag, onDragOver, onDragLeave, onDrop, onDragEnd } = useDragAndDrop
     font-size: 1.8rem;
   }
 }
+
 </style>

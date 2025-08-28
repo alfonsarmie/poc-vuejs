@@ -28,7 +28,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 
-const price = ref(45598.53) // Variable reactiva
+const price = ref(null) // Variable reactiva
 const lastUpdate = ref('00:00:00')
 
 // Se actualiza automáticamente cuando price cambia
@@ -39,29 +39,95 @@ const formattedPrice = computed(() => {
   }).format(price.value)
 })
 
+
+
+// Función para obtener el precio de la API
+const fetchBitcoinPrice = async () => {
+  try {
+    const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+    const data = await response.json();
+    if (data && data.bitcoin && data.bitcoin.usd) {
+      price.value = data.bitcoin.usd;
+      lastUpdate.value = new Date().toLocaleTimeString('es-ES', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+    }
+  } catch (error) {
+    console.error('Error al obtener el precio del Bitcoin:', error);
+  }
+};
+
+
+
+
 onMounted(() => {
   // Simular actualización en tiempo real
+  //Actualizar inmediatamente el precio desde la API
+  fetchBitcoinPrice();
+  
+  // Luego actualizar cada 10 segundos
   const interval = setInterval(() => {
+    fetchBitcoinPrice();
+  }, 20000); // Cada 10 segundos
+  
+
+  /*
+  const interval = setInterval(() => {
+
+
+
+
     // Variación aleatoria ± $100
     const change = (Math.random() * 200) - 100
+
     price.value = Math.max(40000, price.value + change)
+
     lastUpdate.value = new Date().toLocaleTimeString('es-ES', {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit'
     })
-  }, 10000)
+  }, 10000)*
 
-  // Actualizar inmediatamente
+  // Actualizar inmediatamente, establece una fecha y hora de inicio de montaje del componente
   lastUpdate.value = new Date().toLocaleTimeString('es-ES', {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit'
-  })
+  })*/
 
+
+  // Limpiar intervalo al desmontar el componente, evita fugas de memoria (ejecucion segundo plano)
   onUnmounted(() => clearInterval(interval))
+
 })
+
+
+
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <style scoped>
 .crypto-widget {
