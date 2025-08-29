@@ -44,8 +44,13 @@ export function useDragAndDrop(widgets) {
       
       widgets.value = items
       
-      // Guardar en localStorage
-      localStorage.setItem('dashboardLayout', JSON.stringify(items))
+      
+      // Guardar el nuevo orden en localStorage
+      
+      localStorage.setItem('dashboardLayout', JSON.stringify(
+        items.map(i => ({ component: i.component.__name }))
+        )
+      )
     }
     
     isDragging.value = false
@@ -70,4 +75,5 @@ export function useDragAndDrop(widgets) {
     onDragEnd,
     isDragging
   }
+  
 }

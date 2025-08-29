@@ -42,7 +42,17 @@ const defaultWidgets = [
   { component: WidgetClock }
 ]
 
+//Desestructura y trae copia en memoria
 const widgets = ref([...defaultWidgets])
+
+// Mapeo de nombres a componentes
+const componentMap = {
+  'widgetcrypto': WidgetCrypto,
+  'widgetweather': WidgetWeather,
+  'widgetnotes': WidgetNotes,
+  'widgetclock': WidgetClock
+};
+
 
 // Cargar layout guardado
 onMounted(() => {
@@ -61,9 +71,9 @@ onMounted(() => {
 })
 
 const getComponentByName = (name) => {
-  if (!name) return WidgetCrypto; // si es null o undefined
+    
   const key = name.toString().toLowerCase(); // pasar a minúscula para evitar errores
-  return componentMap[key] || WidgetCrypto; // fallback seguro
+  return componentMap[key] || WidgetCrypto; 
 }
 
 const { startDrag, onDragOver, onDragLeave, onDrop, onDragEnd } = useDragAndDrop(widgets)
